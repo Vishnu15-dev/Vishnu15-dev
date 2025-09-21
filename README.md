@@ -102,3 +102,36 @@ The Kubernetes deployment and service are applied.
 A LoadBalancer service is created in AWS.
 
 AWS assigns an external IP or DNS.
+
+6. Accessing the Application
+
+Run:
+```
+kubectl get svc nginx-service
+```
+
+Note the EXTERNAL-IP.
+
+Open it in a browser → You’ll see the custom NGINX page.
+
+7. End-to-End Flow
+
+Developer pushes code → GitHub.
+
+Jenkins pipeline triggers automatically.
+
+Docker image is built → pushed to Docker Hub.
+
+Kubernetes manifests updated.
+
+Jenkins deploys app to Amazon EKS.
+
+Application becomes accessible via LoadBalancer IP.
+
+8. Architecture Diagram
+
+📊 The pipeline flow:
+
+```
+Terraform -> GitHub → Jenkins → Docker Hub → Amazon EKS → LoadBalancer → User
+```
