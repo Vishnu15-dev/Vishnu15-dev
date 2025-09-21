@@ -1,205 +1,104 @@
-# 🚀 End-to-End CI/CD Pipeline: GitHub → Jenkins → Docker Hub → AWS EKS
+# 🚀 End-to-End CI/CD Pipeline: Terrafrom -> GitHub → Jenkins → Docker Hub → AWS EKS
 
 This project demonstrates how to set up a complete **CI/CD pipeline** for deploying a simple **NGINX web app** into an **Amazon EKS cluster** using **Jenkins**.
 
----
 
-## 📂 Repository Structure
+🚀 CI/CD Pipeline Implementation Guide (GitHub → Jenkins → Docker Hub → Amazon EKS)
 
-my-nginx-app/
-├── index.html # Simple web app
-├── Dockerfile # Build custom NGINX image
-├── Jenkinsfile # CI/CD pipeline definition
-└── k8s/ # Kubernetes manifests
-├── nginx-deployment.yaml
-└── nginx-service.yaml
+This document explains the steps to set up and implement a CI/CD pipeline that deploys a simple NGINX web app into Amazon EKS using Jenkins, Docker Hub, and Kubernetes.
 
-php-template
-Copy code
+1. Prerequisites
 
----
+Before starting, ensure the following are installed and configured:
 
-## 🌐 Application Code
+AWS Account with IAM user or IAM role (with EKS and ECR/Docker permissions).
 
-`index.html`
+Amazon EKS Cluster created and running.
 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <title>My NGINX App</title>
-</head>
-<body>
-  <h1>Welcome to My NGINX App!</h1>
-  <p>Deployed via Jenkins → Docker Hub → AWS EKS 🚀</p>
-</body>
-</html>
-🐳 Dockerfile
-dockerfile
-Copy code
-# Use official NGINX base image
-FROM nginx:alpine
+EC2 Instance (for Jenkins setup).
 
-# Copy custom HTML to default NGINX directory
-COPY index.html /usr/share/nginx/html/index.html
-☸️ Kubernetes Manifests
-nginx-deployment.yaml
-yaml
-Copy code
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment
-  labels:
-    app: nginx
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: nginx
-        image: katamreddyvishnu/sample-nginx:<DOCKER_IMAGE_TAG>
-        ports:
-        - containerPort: 80
-nginx-service.yaml
-yaml
-Copy code
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-service
-spec:
-  type: LoadBalancer
-  selector:
-    app: nginx
-  ports:
-    - port: 80
-      targetPort: 80
-🔧 Jenkins Pipeline
-Jenkinsfile
+Docker Hub account.
 
-groovy
-Copy code
-pipeline {
-    agent any
+Tools on Jenkins server:
 
-    environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
-        IMAGE_NAME = 'katamreddyvishnu/sample-nginx'
-        AWS_REGION = "us-east-1"
-        CLUSTER_NAME = "my-demo-cluster"
-    }
+Terraform
 
-    stages {
-        stage('Clone Repo') {
-            steps {
-                git url: 'https://github.com/Vishnu15-dev/my-nginx-app.git', branch: 'master'
-            }
-        }
+Docker
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    docker.build("${IMAGE_NAME}:${BUILD_NUMBER}")
-                }
-            }
-        }
+AWS CLI v2
 
-        stage('Push to Docker Hub') {
-            steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-creds') {
-                        docker.image("${IMAGE_NAME}:${BUILD_NUMBER}").push()
-                    }
-                }
-            }
-        }
+Kubectl
 
-        stage('Update Deployment Manifest') {
-            steps {
-                script {
-                    sh "sed -i 's|<DOCKER_IMAGE_TAG>|${BUILD_NUMBER}|g' k8s/nginx-deployment.yaml"
-                }
-            }
-        }
+eksctl
 
-        stage('Deploy to EKS') {
-            steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
-                    sh '''
-                        aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME --kubeconfig kubeconfig.tmp
-                        export KUBECONFIG=kubeconfig.tmp
+Git
 
-                        kubectl apply -f k8s/nginx-deployment.yaml
-                        kubectl apply -f k8s/nginx-service.yaml
-                    '''
-                }
-            }
-        }
-    }
+2. GitHub Repository Setup
 
-    post {
-        failure {
-            echo "❌ Deployment failed. Check the logs."
-        }
-        success {
-            echo "✅ Successfully deployed ${IMAGE_NAME}:${BUILD_NUMBER} to EKS!"
-        }
-    }
-}
-🔄 CI/CD Workflow
-Developer pushes code → GitHub.
+Create a new GitHub repository.
 
-Jenkins pipeline runs:
+Add the following files:
 
-Clones repo
+index.html → Your application code.
 
-Builds Docker image
+Dockerfile → Instructions to build a custom Docker image.
 
-Pushes image to Docker Hub
+Kubernetes manifests (deployment.yaml, service.yaml) → Define how the app runs on EKS.
 
-Updates Kubernetes manifests with new tag
+README.md → Documentation.
 
-Deploys to EKS via kubectl
+3. Jenkins Setup
 
-Service of type LoadBalancer exposes app.
+Install Jenkins on an EC2 instance (Ubuntu recommended).
 
-Access app via the EXTERNAL-IP from:
+Install required plugins:
 
-bash
-Copy code
-kubectl get svc nginx-service
-🔑 Jenkins Credentials Setup
-Docker Hub:
+Docker
 
-ID: dockerhub-creds
+Kubernetes CLI
 
-Type: Username/Password (or token)
+AWS Credentials
 
-AWS Credentials:
+Git
 
-ID: aws-creds
+Create credentials in Jenkins:
 
-Type: AWS Credentials (Access Key + Secret Key)
+dockerhub-creds → Docker Hub username/password or token.
 
-📊 High-Level Architecture
-scss
-Copy code
-GitHub → Jenkins → Docker Build → Docker Hub → EKS → Service (LoadBalancer) → User
-✅ Result
-When the pipeline completes, visit the LoadBalancer EXTERNAL-IP in a browser:
+aws-creds → AWS IAM user’s access key and secret.
 
-cpp
-Copy code
-http://<external-ip>/
-You’ll see:
+4. CI/CD Pipeline Workflow
 
-Welcome to My NGINX App!
-Deployed via Jenkins → Docker Hub → AWS EKS 🚀
+The pipeline will have these stages:
 
+Clone Repository
+
+Pulls the application code and manifests from GitHub.
+
+Build Docker Image
+
+Uses the Dockerfile to build a custom NGINX image containing index.html.
+
+Push to Docker Hub
+
+Pushes the built image to your Docker Hub repository.
+
+Update Deployment Manifest
+
+Replaces the image tag in the Kubernetes manifest with the new build version.
+
+Deploy to Amazon EKS
+
+Uses AWS CLI and kubectl to apply the updated deployment and service YAML files to the cluster.
+
+5. Deployment on EKS
+
+Jenkins updates the kubeconfig dynamically using:
+
+AWS CLI + update-kubeconfig.
+
+The Kubernetes deployment and service are applied.
+
+A LoadBalancer service is created in AWS.
+
+AWS assigns an external IP or DNS.
