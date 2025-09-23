@@ -45,10 +45,12 @@ git --version
 ```
 
 3️⃣ Install Java (required for Jenkins)
+```
 sudo apt install openjdk-11-jdk -y
 java -version
-
+```
 4️⃣ Install Jenkins
+```
 # Add Jenkins key and repo
 curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
   /usr/share/keyrings/jenkins-keyring.asc > /dev/null
@@ -56,8 +58,10 @@ curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
 echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
   https://pkg.jenkins.io/debian-stable binary/ | \
   sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+```
 
 # Install Jenkins
+```
 sudo apt update
 sudo apt install jenkins -y
 
@@ -65,25 +69,33 @@ sudo apt install jenkins -y
 sudo systemctl enable jenkins
 sudo systemctl start jenkins
 sudo systemctl status jenkins
+```
 
 
 Access Jenkins at:
+```
 👉 http://<your-server-ip>:8080
+```
 
 5️⃣ Install Terraform
+```
 sudo apt install wget unzip -y
 wget https://releases.hashicorp.com/terraform/1.9.8/terraform_1.9.8_linux_amd64.zip
 unzip terraform_1.9.8_linux_amd64.zip
 sudo mv terraform /usr/local/bin/
 terraform -version
+```
 
 6️⃣ Install kubectl
+```
 curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
 kubectl version --client
+```
 
 7️⃣ Install Docker
+```
 # Remove old versions if any
 sudo apt remove docker docker-engine docker.io containerd runc -y
 
@@ -106,15 +118,17 @@ sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 
 # Add user to docker group (no sudo needed for docker)
-sudo usermod -aG docker $USER
-newgrp docker
+sudo usermod -aG docker jenkins
+
 
 # Verify
 docker --version
+```
 
 ✅ Verification Checklist
 
 Run these to confirm:
+```
 
 git --version
 java -version
@@ -122,6 +136,7 @@ jenkins --version   # or check service
 terraform -version
 kubectl version --client
 docker --version
+```
 
 
 # 2. GitHub Repository Setup
