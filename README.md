@@ -156,7 +156,6 @@ Output format (json recommended)
 
 Run these to confirm:
 ```
-
 git --version
 java -version
 jenkins --version   # or check service
