@@ -32,7 +32,7 @@ Kubectl
 eksctl
 
 Git
-# 🔧 Install Git, Java, Jenkins, Terraform, kubectl, Docker on Ubuntu 22.04
+# 🔧 Install Git, Java, Jenkins, Terraform, kubectl, Docker, AWS CLI on Ubuntu 22.04
 1️⃣ Update System
 ```
 sudo apt update && sudo apt upgrade -y
