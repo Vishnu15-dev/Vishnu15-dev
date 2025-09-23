@@ -1,4 +1,4 @@
-# 🚀 End-to-End CI/CD Pipeline: Terrafrom -> GitHub → Jenkins → Docker Hub → AWS EKS
+# 🚀 End-to-End CI/CD Pipeline:  GitHub → Jenkins → Docker Hub → AWS EKS
 
 This project demonstrates how to set up a complete **CI/CD pipeline** for deploying a simple **NGINX web app** into an **Amazon EKS cluster** using **Jenkins**.
 
@@ -32,6 +32,97 @@ Kubectl
 eksctl
 
 Git
+# 🔧 Install Git, Java, Jenkins, Terraform, kubectl, Docker on Ubuntu 22.04
+1️⃣ Update System
+```
+sudo apt update && sudo apt upgrade -y
+```
+
+2️⃣ Install Git
+```
+sudo apt install git -y
+git --version
+```
+
+3️⃣ Install Java (required for Jenkins)
+sudo apt install openjdk-11-jdk -y
+java -version
+
+4️⃣ Install Jenkins
+# Add Jenkins key and repo
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | \
+  sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+# Install Jenkins
+sudo apt update
+sudo apt install jenkins -y
+
+# Enable & start Jenkins
+sudo systemctl enable jenkins
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+
+
+Access Jenkins at:
+👉 http://<your-server-ip>:8080
+
+5️⃣ Install Terraform
+sudo apt install wget unzip -y
+wget https://releases.hashicorp.com/terraform/1.9.8/terraform_1.9.8_linux_amd64.zip
+unzip terraform_1.9.8_linux_amd64.zip
+sudo mv terraform /usr/local/bin/
+terraform -version
+
+6️⃣ Install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+kubectl version --client
+
+7️⃣ Install Docker
+# Remove old versions if any
+sudo apt remove docker docker-engine docker.io containerd runc -y
+
+# Install packages
+sudo apt update
+sudo apt install ca-certificates curl gnupg lsb-release -y
+
+# Add Docker GPG key
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+# Add repo
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
+sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Install Docker Engine
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+
+# Add user to docker group (no sudo needed for docker)
+sudo usermod -aG docker $USER
+newgrp docker
+
+# Verify
+docker --version
+
+✅ Verification Checklist
+
+Run these to confirm:
+
+git --version
+java -version
+jenkins --version   # or check service
+terraform -version
+kubectl version --client
+docker --version
+
 
 # 2. GitHub Repository Setup
 
