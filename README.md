@@ -151,7 +151,7 @@ AWS Secret Access Key
 Default region (e.g., us-east-1)
 
 Output format (json recommended)
-
+```
 ✅ Verification Checklist
 
 Run these to confirm:
