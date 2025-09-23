@@ -1,4 +1,4 @@
-# 🚀 End-to-End CI/CD Pipeline:  GitHub → Jenkins → Docker Hub → AWS EKS
+# 🚀 End-to-End CI/CD Pipeline: Terraform | GitHub → Jenkins → Docker Hub → AWS EKS
 
 This project demonstrates how to set up a complete **CI/CD pipeline** for deploying a simple **NGINX web app** into an **Amazon EKS cluster** using **Jenkins**.
 
@@ -128,16 +128,15 @@ docker --version
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
-```
 
 # Verify
 
 aws --version
 ```
 
+
 ### Configure credentials:
 ```
-
 aws configure
 ```
 
@@ -151,7 +150,7 @@ AWS Secret Access Key
 Default region (e.g., us-east-1)
 
 Output format (json recommended)
-```
+
 ✅ Verification Checklist
 
 Run these to confirm:
@@ -163,10 +162,55 @@ terraform -version
 kubectl version --client
 docker --version
 aws --version
+
+```
+# 2.Terraform Setup
+1.Initialize Terraform
+```
+terraform init
+```
+
+Downloads required provider plugins (AWS, Kubernetes, etc).
+
+Prepares .terraform working directory.
+
+2. Validate Configuration
+```
+terraform validate
 ```
 
 
-# 2. GitHub Repository Setup
+Checks syntax and configuration correctness.
+
+3. Review the Execution Plan
+```
+terraform plan
+```
+
+
+Shows what resources will be created.
+
+
+
+4. Apply to Provision Resources
+```
+terraform apply
+```
+
+
+Provisions the EKS cluster, VPC, and Node Groups.
+
+6. Update kubeconfig
+```
+aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
+
+
+Example:
+
+aws eks --region us-east-1 update-kubeconfig --name Vishnu-demo
+```
+
+# 3. GitHub Repository Setup
 
 Create a new GitHub repository.
 
@@ -180,7 +224,7 @@ Kubernetes manifests (deployment.yaml, service.yaml) → Define how the app runs
 
 README.md → Documentation.
 
-# 3. Jenkins Setup
+# 4. Jenkins Setup
 
 Install Jenkins on an EC2 instance (Ubuntu recommended).
 
@@ -200,7 +244,7 @@ dockerhub-creds → Docker Hub username/password or token.
 
 aws-creds → AWS IAM user’s access key and secret.
 
-# 4. CI/CD Pipeline Workflow
+# 5. CI/CD Pipeline Workflow
 
 The pipeline will have these stages:
 
@@ -224,7 +268,11 @@ Deploy to Amazon EKS
 
 Uses AWS CLI and kubectl to apply the updated deployment and service YAML files to the cluster.
 
-# 5. Deployment on EKS
+# 6. Deployment on EKS
+✅ Update kubeconfig for EKS
+```
+aws eks --region us-east-1 update-kubeconfig --name Vishnu-demo
+```
 
 Jenkins updates the kubeconfig dynamically using:
 
@@ -236,7 +284,7 @@ A LoadBalancer service is created in AWS.
 
 AWS assigns an external IP or DNS.
 
-# 6. Accessing the Application
+# 7. Accessing the Application
 
 Run:
 ```
@@ -247,7 +295,7 @@ Note the EXTERNAL-IP.
 
 Open it in a browser → You’ll see the custom NGINX page.
 
-# 7. End-to-End Flow
+# 8. End-to-End Flow
 
 Developer pushes code → GitHub.
 
@@ -261,10 +309,12 @@ Jenkins deploys app to Amazon EKS.
 
 Application becomes accessible via LoadBalancer IP.
 
-# 8. Architecture Diagram
+# 9. Architecture Diagram
 
 📊 The pipeline flow:
 
 ```
-Terraform -> GitHub → Jenkins → Docker Hub → Amazon EKS → LoadBalancer → User
+Terraform | GitHub → Jenkins → Docker Hub → Amazon EKS → LoadBalancer → User
 ```
+
+
