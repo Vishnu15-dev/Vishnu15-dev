@@ -58,10 +58,9 @@ curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
 echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
   https://pkg.jenkins.io/debian-stable binary/ | \
   sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
-```
 
 # Install Jenkins
-```
+
 sudo apt update
 sudo apt install jenkins -y
 
@@ -124,6 +123,34 @@ sudo usermod -aG docker jenkins
 # Verify
 docker --version
 ```
+8️⃣ Install AWS CLI v2
+```
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+```
+
+# Verify
+
+aws --version
+```
+
+### Configure credentials:
+```
+
+aws configure
+```
+
+
+Enter:
+
+AWS Access Key ID
+
+AWS Secret Access Key
+
+Default region (e.g., us-east-1)
+
+Output format (json recommended)
 
 ✅ Verification Checklist
 
@@ -136,6 +163,7 @@ jenkins --version   # or check service
 terraform -version
 kubectl version --client
 docker --version
+aws --version
 ```
 
 
